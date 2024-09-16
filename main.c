@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:36:29 by jsoares           #+#    #+#             */
-/*   Updated: 2024/09/15 19:16:12 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/09/16 16:42:19 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ void *actions(void *arg)
 
     sleeping(philo->id);
     usleep(philo->time_of_sleep);
+    
+    thinking(philo->id);
     pthread_mutex_unlock(philo->mutex_left);
     pthread_mutex_unlock(philo->mutex_right);
     return (NULL);
