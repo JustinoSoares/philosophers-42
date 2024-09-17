@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:27:50 by jsoares           #+#    #+#             */
-/*   Updated: 2024/09/15 19:09:00 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/09/17 19:07:30 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHIL0_H
-# define PHILO_H
+#define PHILO_H
 
 #include <unistd.h>
 #include <stdio.h>
@@ -30,11 +30,19 @@ typedef struct s_philo
     int id;
     pthread_mutex_t *mutex_left;
     pthread_mutex_t *mutex_right;
-    long long int time_of_eat;
-    long long int time_of_think;
-    long long int time_of_sleep;
-    long long int time_of_die;
+    pthread_mutex_t *mutex;
+    size_t time_of_eat;
+    size_t time_of_think;
+    size_t time_of_sleep;
+    size_t time_of_die;
+    size_t time_last_eat;
 } t_philo;
 
+
+typedef struct s_current
+{
+    int id;
+    size_t time;   
+} t_current;
 
 #endif
