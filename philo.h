@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:27:50 by jsoares           #+#    #+#             */
-/*   Updated: 2024/09/17 19:07:30 by justinosoar      ###   ########.fr       */
+/*   Updated: 2024/09/20 16:40:05 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 typedef struct s_philo
 {
     int id;
+    int is_died;
     pthread_mutex_t *mutex_left;
     pthread_mutex_t *mutex_right;
     pthread_mutex_t *mutex;
@@ -36,6 +37,7 @@ typedef struct s_philo
     size_t time_of_sleep;
     size_t time_of_die;
     size_t time_last_eat;
+    size_t start_time;
 } t_philo;
 
 
@@ -44,5 +46,7 @@ typedef struct s_current
     int id;
     size_t time;   
 } t_current;
+
+void *actions(void *arg);j
 
 #endif

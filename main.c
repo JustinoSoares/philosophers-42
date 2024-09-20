@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:36:29 by jsoares           #+#    #+#             */
-/*   Updated: 2024/09/17 19:40:20 by justinosoar      ###   ########.fr       */
+/*   Updated: 2024/09/20 08:50:31 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,108 +21,64 @@ size_t get_current_time(void)
     return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
-void thinking(int thread_id)
+int is_died(t_philo *philo)
 {
-    struct timeval tv;
-    size_t ms;
-
-    // pegar po tempo actual
-    gettimeofday(&tv, NULL);
-    ms = (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000);
-    printf("%zu %d is thinking\n", ms, thread_id);
-}
-void sleeping(int thread_id)
-{
-    struct timeval tv;
-    size_t ms;
-
-    // pegar po tempo actual
-    gettimeofday(&tv, NULL);
-    ms = (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000);
-    printf("%zu %d is sleeping\n", ms, thread_id);
-}
-
-void eating(int thread_id)
-{
-    struct timeval tv;
-    size_t ms;
-
-    // pegar po tempo actual
-    gettimeofday(&tv, NULL);
-    ms = (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000);
-    printf("%zu %d is eating\n", ms, thread_id);
-}
-
-void take_fork_left(int thread_id)
-{
-    struct timeval tv;
-    size_t ms;
-
-    // pegar po tempo actual
-    gettimeofday(&tv, NULL);
-    ms = (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000);
-    printf("%zu %d take fork left\n", ms, thread_id);
-}
-
-void take_fork_right(int thread_id)
-{
-    struct timeval tv;
-    size_t ms;
-
-    // pegar po tempo actual
-    gettimeofday(&tv, NULL);
-    ms = (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000);
-    printf("%zu %d take fork right\n", ms, thread_id);
-}
-
-void dropped_fork_right(int thread_id)
-{
-    struct timeval tv;
-    size_t ms;
-
-    // pegar po tempo actual
-    gettimeofday(&tv, NULL);
-    ms = (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000);
-    printf("%zu %d dropped the right fork\n", ms, thread_id);
-}
-
-void dropped_fork_left(int thread_id)
-{
-    struct timeval tv;
-    size_t ms;
-
-    // pegar po tempo actual
-    gettimeofday(&tv, NULL);
-    ms = (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000);
-    printf("%zu %d dropped the left fork\n", ms, thread_id);
-}
-
-void *actions(void *arg)
-{
-    t_philo *philo;
-    size_t dif;
-    
-    while (1)
+    if ((get_current_time() - philo->time_last_eat) > philo->time_of_die)
     {
-        philo = (t_philo *)arg;
-        pthread_mutex_lock(philo->mutex_left);
-        pthread_mutex_lock(philo->mutex_right);
-        take_fork_left(philo->id);
-        take_fork_right(philo->id);
-        dif = get_current_time() - philo->time_last_eat;
-        philo->time_last_eat = get_current_time();
-        printf("id %d Dif %zu last %zu \n", philo->id, dif, philo->time_last_eat);
-        eating(philo->id);
-        usleep(philo->time_of_eat);
-        pthread_mutex_unlock(philo->mutex_left);
-        dropped_fork_left(philo->id);
-        pthread_mutex_unlock(philo->mutex_right);
-        dropped_fork_right(philo->id);
-        sleeping(philo->id);
-        usleep(philo->time_of_sleep);
-        thinking(philo->id);
+         printf("%zu %d is died\n", get_current_time() - philo->start_time, philo->id);
+         return (1);
     }
-    return (NULL);
+    return (0);
+}
+
+void thinking(t_philo *philo)
+{
+    if (is_died(philo))
+        return ;
+    printf("%zu %d is thinking\n", get_current_time() - philo->start_time, philo->id);
+}
+void sleeping(t_philo *philo)
+{
+    if (is_died(philo))
+        return ;
+    printf("%zu %d is sleeping\n", get_current_time() - philo->start_time, philo->id);
+    usleep(philo->time_of_sleep);
+}
+
+void eating(t_philo *philo)
+{
+    if (is_died(philo))
+        return ;
+    printf("%zu %d is eating\n", get_current_time() - philo->start_time, philo->id);
+    usleep(philo->time_of_eat);
+}
+
+void take_fork_left(t_philo *philo)
+{
+    if (is_died(philo))
+        return ;
+    printf("%zu %d take fork left\n", get_current_time() - philo->start_time, philo->id);
+}
+
+void take_fork_right(t_philo *philo)
+{
+    if (is_died(philo))
+        return ;
+    printf("%zu %d take fork right\n", get_current_time() - philo->start_time, philo->id);
+}
+
+void dropped_fork_right(t_philo *philo)
+{
+    if (is_died(philo))
+        return ;
+    printf("%zu %d dropped the right fork\n", get_current_time() - philo->start_time, philo->id);
+}
+
+void dropped_fork_left(t_philo *philo)
+{
+    if (is_died(philo))
+        return ;
+    printf("%zu %d dropped the left fork\n", get_current_time() - philo->start_time, philo->id);
 }
 
 int main(int ac, char **av)
@@ -163,6 +119,9 @@ int main(int ac, char **av)
             philos[i].time_of_sleep = atoi(av[time_to_sleep]) * 1000;
             philos[i].mutex_left = &mutex[i];
             philos[i].mutex_right = &mutex[fork_right];
+            philos[i].time_last_eat = get_current_time();
+            philos[i].start_time = get_current_time();
+            philos[i].is_died = 0;
             pthread_create(&pthreads[i], NULL, (void *)&actions, (void *)&philos[i]);
             i++;
         }
