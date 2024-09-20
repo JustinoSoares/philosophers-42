@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:27:50 by jsoares           #+#    #+#             */
-/*   Updated: 2024/09/20 16:40:05 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/09/20 16:41:55 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,6 @@ typedef struct s_current
     size_t time;   
 } t_current;
 
-void *actions(void *arg);j
+void *actions(void *arg);
 
 #endif
