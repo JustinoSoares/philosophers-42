@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:27:50 by jsoares           #+#    #+#             */
-/*   Updated: 2024/09/20 16:41:55 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/09/21 19:57:10 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,11 @@ typedef struct s_philo
 typedef struct s_current
 {
     int id;
-    size_t time;   
+    size_t time;
+    int died;
 } t_current;
 
 void *actions(void *arg);
+size_t get_current_time(void);
 
 #endif
