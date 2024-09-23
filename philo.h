@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:27:50 by jsoares           #+#    #+#             */
-/*   Updated: 2024/09/21 19:57:10 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/09/23 10:20:31 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,21 +25,6 @@
 #define time_to_sleep 4
 #define number_of_times_each_philosopher_must_eat 5
 
-typedef struct s_philo
-{
-    int id;
-    int is_died;
-    pthread_mutex_t *mutex_left;
-    pthread_mutex_t *mutex_right;
-    pthread_mutex_t *mutex;
-    size_t time_of_eat;
-    size_t time_of_think;
-    size_t time_of_sleep;
-    size_t time_of_die;
-    size_t time_last_eat;
-    size_t start_time;
-} t_philo;
-
 
 typedef struct s_current
 {
@@ -47,6 +32,25 @@ typedef struct s_current
     size_t time;
     int died;
 } t_current;
+
+typedef struct s_philo
+{
+    int id;
+    int is_died;
+    pthread_mutex_t *mutex_left;
+    pthread_mutex_t *mutex_right;
+    pthread_mutex_t *mutex;
+    pthread_mutex_t *verify_died;
+    size_t time_of_eat;
+    size_t time_of_think;
+    size_t time_of_sleep;
+    size_t time_of_die;
+    size_t time_last_eat;
+    size_t start_time;
+    struct s_current *current;
+} t_philo;
+
+
 
 void *actions(void *arg);
 size_t get_current_time(void);
