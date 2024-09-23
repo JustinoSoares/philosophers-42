@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:27:50 by jsoares           #+#    #+#             */
-/*   Updated: 2024/09/23 10:20:31 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/09/23 19:02:44 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ typedef struct s_philo
     int is_died;
     pthread_mutex_t *mutex_left;
     pthread_mutex_t *mutex_right;
-    pthread_mutex_t *mutex;
-    pthread_mutex_t *verify_died;
+    pthread_mutex_t *mutex_write;
+    pthread_mutex_t *mutex_died;
     size_t time_of_eat;
     size_t time_of_think;
     size_t time_of_sleep;
