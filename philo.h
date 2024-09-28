@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:27:50 by jsoares           #+#    #+#             */
-/*   Updated: 2024/09/27 16:00:01 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/09/28 23:36:22 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,24 @@
 #define time_sleep 4
 #define number_must_eat 5
 
-
-typedef struct s_philo {
+typedef struct s_philo
+{
     int id;
+    int finish;
     pthread_t *threads;
     pthread_mutex_t *fork_left;
     pthread_mutex_t *fork_right;
     pthread_mutex_t *mutex;
     pthread_mutex_t mutex_died;
-    size_t  time_to_die;
-    size_t  time_to_eat;
-    size_t  time_to_sleep;
+    size_t num_philo;
+    size_t time_to_die;
+    size_t time_to_eat;
+    size_t time_to_sleep;
+    size_t time_start;
+    size_t time_last_eat;
 } t_philo;
 
-void    *action(void *arg);
+void *action(void *arg);
+size_t get_current_time(void);
 
 #endif
