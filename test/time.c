@@ -1,27 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/12 17:36:29 by jsoares           #+#    #+#             */
-/*   Updated: 2024/10/07 00:48:43 by jsoares          ###   ########.fr       */
+/*   Created: 2024/10/07 01:13:28 by jsoares           #+#    #+#             */
+/*   Updated: 2024/10/07 08:04:16 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "sys/time.h"
+#include "unistd.h"
+#include "stdio.h"
 
-int		main(int argc, char **argv)
+int main(void)
 {
-	t_rules	rules;
-	int		ret;
+    struct  timeval start, end;
 
-	if (argc != 5 && argc != 6)
-		return (write_error("Wrong amount of arguments"));
-	if ((ret = init_all(&rules, argv)))
-		return (error_manager(ret));
-	if (launcher(&rules))
-		return (write_error("There was an error creating the threads"));
-	return (0);
+    gettimeofday(&start, NULL);
+
+    long time = (start.tv_sec * 1000) + (start.tv_usec / 1000);
+    printf("%ld\n", time);
+
 }

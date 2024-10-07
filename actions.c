@@ -3,82 +3,126 @@
 /*                                                        :::      ::::::::   */
 /*   actions.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 08:50:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/09/28 23:49:05 by justinosoar      ###   ########.fr       */
+/*   Updated: 2024/10/07 11:43:59 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-size_t get_current_time(void)
+void philo_eats(t_philosopher *philo)
 {
-    struct timeval time;
+	t_rules *rules;
 
-    if (gettimeofday(&time, NULL))
-        write(2, "Error\n", 6);
-    return (time.tv_sec * 1000 + time.tv_usec / 1000);
+	rules = philo->rules;
+	pthread_mutex_lock(&(rules->forks[philo->left_fork_id]));
+	pthread_mutex_lock(&(rules->forks[philo->right_fork_id]));
+	if ((rules->dieded))
+	{
+		pthread_mutex_unlock(&(rules->forks[philo->left_fork_id]));
+		pthread_mutex_unlock(&(rules->forks[philo->right_fork_id]));
+	}
+	else
+	{
+		action_print(rules, philo->id, "has taken a fork");
+		action_print(rules, philo->id, "has taken a fork");
+		pthread_mutex_lock(&(rules->meal_check));
+		action_print(rules, philo->id, "is eating");
+		philo->t_last_meal = timestamp();
+		pthread_mutex_unlock(&(rules->meal_check));
+		smart_sleep(rules->time_eat, rules);
+		(philo->x_ate)++;
+		pthread_mutex_unlock(&(rules->forks[philo->left_fork_id]));
+		pthread_mutex_unlock(&(rules->forks[philo->right_fork_id]));
+	}
 }
 
-void is_doing(t_philo *philo, char *str)
+void *p_thread(void *void_philosopher)
 {
-    printf("%ld %i %s\n", get_current_time() - philo->time_last_eat, philo->id, str);
+	int i;
+	t_philosopher *philo;
+	t_rules *rules;
+
+	i = 0;
+	philo = (t_philosopher *)void_philosopher;
+	rules = philo->rules;
+	if (philo->id % 2)
+		usleep(100);
+	while (!(rules->dieded))
+	{
+
+		if (rules->all_ate)
+			break;
+		philo_eats(philo);
+		if (rules->all_ate)
+			break;
+		action_print(rules, philo->id, "is sleeping");
+		smart_sleep(rules->time_sleep, rules);
+		action_print(rules, philo->id, "is thinking");
+		i++;
+	}
+	return (NULL);
 }
 
-void    philo_finish(t_philo *philo)
+void exit_launcher(t_rules *rules, t_philosopher *philos)
 {
-    size_t i;
-    i = 0;
+	int i;
 
-    while(i < philo->num_philo)
-    {
-        philo[i].finish = 1;
-        i++;
-    }
+	i = -1;
+	while (++i < rules->nb_philo)
+		pthread_join(philos[i].thread_id, NULL);
+	i = -1;
+	while (++i < rules->nb_philo)
+		pthread_mutex_destroy(&(rules->forks[i]));
+	pthread_mutex_destroy(&(rules->writing));
 }
 
-int is_died(t_philo *philo)
+void death_checker(t_rules *r, t_philosopher *p)
 {
-    if (philo->time_last_eat > get_current_time() - philo->time_to_die)
-    {
-        printf("philo %d is died", philo->id);
-        philo_finish(philo);
-        return (1);
-    }
-    return (0);
+	int i;
+
+	while (!(r->all_ate))
+	{
+		i = -1;
+		while (++i < r->nb_philo && !(r->dieded))
+		{
+			pthread_mutex_lock(&(r->meal_check));
+			if (time_diff(p[i].t_last_meal, timestamp()) > r->time_death)
+			{
+				action_print(r, i, "died");
+				r->dieded = 1;
+			}
+			pthread_mutex_unlock(&(r->meal_check));
+			usleep(100);
+		}
+		if (r->dieded)
+			break;
+		i = 0;
+		while (r->nb_eat != -1 && i < r->nb_philo && p[i].x_ate >= r->nb_eat)
+			i++;
+		if (i == r->nb_philo)
+			r->all_ate = 1;
+	}
 }
 
-void *action(void *arg)
+int launcher(t_rules *rules)
 {
-    t_philo *philo;
+	int i;
+	t_philosopher *phi;
 
-    philo = (t_philo *)arg;
-    while (1)
-    {
-        if (philo->finish || is_died(philo))
-        {
-            printf("Morreuuu\n");
-            break ;
-        }
-           
-        pthread_mutex_lock(philo->fork_left);
-        pthread_mutex_lock(philo->fork_right);
-
-        is_doing(philo, "take fork left");
-        is_doing(philo, "take fork right");
-        is_doing(philo, "is eating");
-
-        philo->time_last_eat = get_current_time();
-        usleep(philo->time_to_eat * 1000);
-
-        pthread_mutex_unlock(philo->fork_left);
-        pthread_mutex_unlock(philo->fork_right);
-        is_doing(philo, "sleeping");
-        usleep(philo->time_to_sleep * 1000);
-
-        is_doing(philo, "thinking");
-    }
-
-    return (NULL);
+	i = 0;
+	phi = rules->philosophers;
+	rules->first_timestamp = timestamp();
+	while (i < rules->nb_philo)
+	{
+		if (pthread_create(&(phi[i].thread_id), NULL, p_thread, &(phi[i])))
+			return (1);
+		phi[i].t_last_meal = timestamp();
+		i++;
+	}
+	death_checker(rules, rules->philosophers);
+	exit_launcher(rules, phi);
+	return (0);
 }

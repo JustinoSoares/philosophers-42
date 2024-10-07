@@ -1,7 +1,7 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 NAME = philo
-PROGRAMS = main.c actions.c
+PROGRAMS = main.c actions.c error.c init.c aux.c
 OBJ = $(PROGRAMS:.c=.o)
 
 all : $(NAME)
