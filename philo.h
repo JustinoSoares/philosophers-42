@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:27:50 by jsoares           #+#    #+#             */
-/*   Updated: 2024/10/07 08:21:50 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/10/16 10:34:44 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ typedef struct s_rules
     int time_eat;
     int time_sleep;
     int nb_eat;
-    int dieded;
+    int died;
     int all_ate;
     long long first_timestamp;
     pthread_mutex_t meal_check;
@@ -57,10 +57,11 @@ int init_all(t_rules *rules, char **argv);
 
 
 int ft_atoi(const char *str);
-void action_print(t_rules *rules, int id, char *string);
+void action_write(t_rules *rules, int id, char *string);
 size_t timestamp(void);
 long long time_diff(long long past, long long pres);
-void smart_sleep(long long time, t_rules *rules);
+void sleeping(long long time, t_rules *rules);
+void ft_waiting(long long unsigned int time);
 
 int launcher(t_rules *rules);
 void exit_launcher(t_rules *rules, t_philosopher *philos);

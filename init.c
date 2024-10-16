@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 00:50:27 by jsoares           #+#    #+#             */
-/*   Updated: 2024/10/07 11:14:03 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/10/16 10:45:05 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ int init_mutex(t_rules *rules)
 {
 	int i;
 
-	i = rules->nb_philo;
-	while (--i >= 0)
+	i = rules->nb_philo + 1;
+	while (--i > 0)
 	{
 		if (pthread_mutex_init(&(rules->forks[i]), NULL))
 			return (1);
@@ -54,13 +54,16 @@ int init_philosophers(t_rules *rules)
 
 int init_all(t_rules *rules, char **argv)
 {
+	int res;
 	rules->nb_philo = ft_atoi(argv[1]);
 	rules->time_death = ft_atoi(argv[2]);
 	rules->time_eat = ft_atoi(argv[3]);
 	rules->time_sleep = ft_atoi(argv[4]);
 	rules->all_ate = 0;
-	rules->dieded = 0;
-	if (rules->nb_philo < 2 || rules->time_death < 0 || rules->time_eat < 0 || rules->time_sleep < 0 || rules->nb_philo > 200)
+	rules->died = 0;
+	if (rules->nb_philo < 2)
+		return (3);
+	if (rules->time_death < 0 || rules->time_eat < 0 || rules->time_sleep < 0 || rules->nb_philo > 200)
 		return (1);
 	if (argv[5])
 	{
@@ -70,7 +73,8 @@ int init_all(t_rules *rules, char **argv)
 	}
 	else
 		rules->nb_eat = -1;
-	if (init_mutex(rules))
+	res = init_mutex(rules);
+	if (res)
 		return (2);
 	init_philosophers(rules);
 	return (0);

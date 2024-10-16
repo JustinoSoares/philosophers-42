@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 00:53:25 by jsoares           #+#    #+#             */
-/*   Updated: 2024/10/07 11:11:38 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/10/16 11:44:08 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,23 +48,23 @@ long long	time_diff(long long past, long long pres)
 	return (pres - past);
 }
 
-void		smart_sleep(long long time, t_rules *rules)
+void		sleeping(long long time, t_rules *rules)
 {
 	long long i;
 
 	i = timestamp();
-	while (!(rules->dieded))
+	while (!(rules->died))
 	{
 		if (time_diff(i, timestamp()) >= time)
 			break ;
-		//usleep(50);
+		ft_waiting((rules->time_death - rules->time_eat - rules->time_sleep) / 2);
 	}
 }
 
-void		action_print(t_rules *rules, int id, char *string)
+void		action_write(t_rules *rules, int id, char *string)
 {
 	pthread_mutex_lock(&(rules->writing));
-	if (!(rules->dieded))
+	if (!(rules->died))
 	{
 		printf("%lld ", timestamp() - rules->first_timestamp);
 		printf("%d ", id);

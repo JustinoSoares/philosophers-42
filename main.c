@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:36:29 by jsoares           #+#    #+#             */
-/*   Updated: 2024/10/07 00:48:43 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/10/15 17:43:03 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,15 @@
 int		main(int argc, char **argv)
 {
 	t_rules	rules;
-	int		ret;
+	int		res;
 
 	if (argc != 5 && argc != 6)
-		return (write_error("Wrong amount of arguments"));
-	if ((ret = init_all(&rules, argv)))
-		return (error_manager(ret));
+		return (write_error("Invalid number of parameters"));
+	res = init_all(&rules, argv);
+	if (res == 3)
+		return (write(1, "0 1 is_died\n", 12));
+	if (res) 
+		return (error_manager(res));
 	if (launcher(&rules))
 		return (write_error("There was an error creating the threads"));
 	return (0);
