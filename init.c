@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 00:50:27 by jsoares           #+#    #+#             */
-/*   Updated: 2024/10/21 18:35:09 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/10/22 14:49:42 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,10 @@ int	init_all(t_rules *rules, char **argv)
 	rules->time_sleep = ft_atoi(argv[4]);
 	rules->all_ate = 0;
 	rules->died = 0;
-	if (rules->nb_philo < 2)
+	if (rules->nb_philo == 1)
 		return (3);
-	if (rules->time_death < 0 || rules->time_eat < 0 || rules->time_sleep < 0
-		|| rules->nb_philo > 200)
+	if (rules->nb_philo < 2 || rules->time_death < 60 || rules->time_eat < 60
+		|| rules->time_sleep < 60 || rules->nb_philo > 200)
 		return (1);
 	if (argv[5])
 	{
@@ -85,4 +85,21 @@ int	init_all(t_rules *rules, char **argv)
 		return (2);
 	init_philosophers(rules);
 	return (0);
+}
+
+void	exit_program(t_rules *rules, t_philosopher *philos)
+{
+	int	i;
+
+	i = -1;
+	while (++i < rules->nb_philo)
+		pthread_join(philos[i].thread_id, NULL);
+	i = 0;
+	while (++i <= rules->nb_philo)
+		pthread_mutex_destroy(&(rules->forks[i]));
+	pthread_mutex_destroy(&(rules->writing));
+	pthread_mutex_destroy(&(rules->m_died));
+	pthread_mutex_destroy(&(rules->m_eat_all));
+	pthread_mutex_destroy(&(rules->m_waiting));
+	pthread_mutex_destroy(&(rules->m_all_ate));
 }

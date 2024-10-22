@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 17:27:50 by jsoares           #+#    #+#             */
-/*   Updated: 2024/10/22 14:22:46 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/10/22 15:02:29 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,11 @@ size_t				timestamp(void);
 long long			time_diff(long long past, long long pres);
 void				waiting(long long time, t_rules *rules);
 
-int					launcher(t_rules *rules);
+int					create_thread(t_rules *rules);
 void				exit_program(t_rules *rules, t_philosopher *philos);
+
+int					create_thread(t_rules *rules);
+void				*p_thread(void *my_philo);
+void				death_verify(t_rules *r, t_philosopher *p);
 
 #endif

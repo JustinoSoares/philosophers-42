@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 00:51:15 by jsoares           #+#    #+#             */
-/*   Updated: 2024/10/20 12:53:22 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/10/22 14:41:43 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	write_error(char *str)
 int	error_manager(int error)
 {
 	if (error == 1)
-		return (write_error("At least one wrong argument"));
+		return (write_error("Verify arguments"));
 	if (error == 2)
 		return (write_error("Fatal error when intializing mutex"));
 	return (1);

@@ -6,12 +6,11 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 08:50:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/10/22 14:23:50 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/10/22 14:55:00 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
 
 static void	lock_forks(t_philosopher *p, t_rules *r, int f_l, int f_r)
 {
@@ -82,26 +81,7 @@ void	*p_thread(void *my_philo)
 	return (NULL);
 }
 
-void	exit_program(t_rules *rules, t_philosopher *philos)
-{
-	int	i;
-
-	i = -1;
-	while (++i < rules->nb_philo)
-		pthread_join(philos[i].thread_id, NULL);
-	i = 0;
-	while (++i <= rules->nb_philo)
-	{
-		pthread_mutex_destroy(&(rules->forks[i]));
-	}
-	pthread_mutex_destroy(&(rules->writing));
-	pthread_mutex_destroy(&(rules->m_died));
-	pthread_mutex_destroy(&(rules->m_eat_all));
-	pthread_mutex_destroy(&(rules->m_waiting));
-	pthread_mutex_destroy(&(rules->m_all_ate));
-}
-
-void	death_checker_aux(t_rules *r, t_philosopher *p, int i)
+static void	death_verify_aux(t_rules *r, t_philosopher *p, int i)
 {
 	pthread_mutex_lock(&(r->meal_check));
 	if (time_diff(p[i].t_last_meal, timestamp()) > r->time_death)
@@ -114,7 +94,7 @@ void	death_checker_aux(t_rules *r, t_philosopher *p, int i)
 	pthread_mutex_unlock(&(r->meal_check));
 }
 
-void	death_checker(t_rules *r, t_philosopher *p)
+void	death_verify(t_rules *r, t_philosopher *p)
 {
 	int	i;
 
@@ -123,7 +103,7 @@ void	death_checker(t_rules *r, t_philosopher *p)
 	{
 		i = -1;
 		while (++i < r->nb_philo && !(r->died))
-			death_checker_aux(r, p, i);
+			death_verify_aux(r, p, i);
 		pthread_mutex_lock(&(r->m_died));
 		if (r->died)
 		{
@@ -139,26 +119,4 @@ void	death_checker(t_rules *r, t_philosopher *p)
 			r->all_ate = 1;
 	}
 	pthread_mutex_unlock(&(r->m_eat_all));
-}
-
-int	launcher(t_rules *rules)
-{
-	t_philosopher	*phi;
-	int				i;
-
-	i = 0;
-	phi = rules->philosophers;
-	rules->first_timestamp = timestamp();
-	while (i < rules->nb_philo)
-	{
-		if (pthread_create(&(phi[i].thread_id), NULL, p_thread, &(phi[i])))
-			return (1);
-		pthread_mutex_lock(&(rules->meal_check));
-		phi[i].t_last_meal = timestamp();
-		pthread_mutex_unlock(&(rules->meal_check));
-		i++;
-	}
-	death_checker(rules, rules->philosophers);
-	exit_program(rules, phi);
-	return (0);
 }
